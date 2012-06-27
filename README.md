@@ -1,4 +1,4 @@
-Image_Cropping_In_Transparent_Area-
-===================================
+Transparent_IMG_cropping
+========================
 
-Frame Image in Transparent Area get and Background Image in selected area cropping   
+Transparent image in Transparent area crop and save or set tow image in one  (android)
