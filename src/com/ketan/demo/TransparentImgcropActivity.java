@@ -43,7 +43,7 @@ public class TransparentImgcropActivity extends Activity implements
 	private int SELECT_PICTURE = 1;
 	private int SELECT_FRAME = 0;
 	private Bitmap bitmapPhoto = null;
-	private Bitmap bitmapResult = null ;
+	private Bitmap bitmapResult = null;
 	private ImageView imgPhoto, imgFrame;
 	// These matrices will be used to move and zoom image
 	private Matrix matrix = new Matrix();
@@ -57,7 +57,6 @@ public class TransparentImgcropActivity extends Activity implements
 	// Fields
 	private String TAG = this.getClass().getSimpleName();
 
-	private ProgressDialog progressDialog;
 	// We can be in one of these 3 states
 	private static final int NONE = 0;
 	private static final int DRAG = 1;
@@ -89,7 +88,7 @@ public class TransparentImgcropActivity extends Activity implements
 		btnSetImg = (Button) findViewById(R.id.btn_getImg);
 		btnFramList = (Button) findViewById(R.id.btn_framelist);
 		btnSave = (Button) findViewById(R.id.btn_save);
-		btnSaveFull=(Button)findViewById(R.id.btn_savefull);
+		btnSaveFull = (Button) findViewById(R.id.btn_savefull);
 		btnCrop = (Button) findViewById(R.id.btn_crop);
 		btnOrientation = (Button) findViewById(R.id.btn_orientation);
 
@@ -359,18 +358,15 @@ public class TransparentImgcropActivity extends Activity implements
 		} else if (v == btnOrientation) {
 			doHorizontal();
 		} else if (v == btnCrop) {
-			Log.v("tag ", "call on imgView");
 			cropIMG();
-			btnCrop.setVisibility(8);
-			btnSave.setVisibility(1);
-			btnSaveFull.setVisibility(8);
 		} else if (v == btnSave) {
 			seavImg();
 			btnSave.setVisibility(8);
 			btnFramList.setVisibility(1);
 			btnSetImg.setVisibility(8);
 			btnOrientation.setVisibility(8);
-			Toast.makeText(TransparentImgcropActivity.this, "your img save ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(TransparentImgcropActivity.this, "your img save ",
+					Toast.LENGTH_SHORT).show();
 
 		} else if (v == btnFramList) {
 			Intent getFrame = new Intent(this, ListOfFrame.class);
@@ -378,24 +374,23 @@ public class TransparentImgcropActivity extends Activity implements
 			imgPhoto.setVisibility(8);
 			btnCrop.setVisibility(8);
 			btnSave.setVisibility(8);
-		}else if (v==btnSaveFull) {
+		} else if (v == btnSaveFull) {
 			savaWithFrame();
+			seavImg();
 			btnSaveFull.setVisibility(8);
-			Toast.makeText(TransparentImgcropActivity.this, "your img save ", Toast.LENGTH_SHORT).show();
+			Toast.makeText(TransparentImgcropActivity.this, "your img save ",
+					Toast.LENGTH_SHORT).show();
 			btnFramList.setVisibility(1);
 		}
 	}
 
-	private void savaWithFrame() {
+	private Bitmap savaWithFrame() {
 		// TODO Auto-generated method stub
 		Bitmap srcImage = bitmapPhoto;
 
-		// Bitmap bitmapResult = Bitmap.createBitmap(imgPhoto.getWidth(),
-		// imgPhoto.getHeight(), Bitmap.Config.ARGB_8888);
-	
+
 		bitmapResult = Bitmap.createBitmap(MyImageView.w, MyImageView.h,
 				Bitmap.Config.ARGB_8888);
-		// Path path = new Path();
 
 		// This is my border
 		Paint paint = new Paint();
@@ -407,28 +402,9 @@ public class TransparentImgcropActivity extends Activity implements
 		Canvas canvas = new Canvas(bitmapResult);
 		canvas.drawBitmap(srcImage, matrix, paint);
 		canvas.drawBitmap(MyImageView.mOriginalBitmap, 0, 0, null);
-		
-		
-		String filename = String.valueOf(System.currentTimeMillis());
-		String fpath = Environment.getExternalStorageDirectory().toString();
-		OutputStream fOut = null;
-		File file = new File(fpath, filename + "_cropIMG.png");
-		fileNAME = fpath + "/" + filename + "_cropIMG.png";
-		try {
-			fOut = new FileOutputStream(file);
-			bitmapResult.compress(Bitmap.CompressFormat.PNG, 90, fOut);
-			fOut.flush();
-			fOut.close();
-			Log.v("save ", "done");
-			MediaStore.Images.Media.insertImage(getContentResolver(),
-					file.getAbsolutePath(), file.getName(), file.getName());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		return bitmapResult;
+
 	}
 
 	private void seavImg() {
@@ -457,19 +433,8 @@ public class TransparentImgcropActivity extends Activity implements
 	}
 
 	private void cropIMG() {
-		// TODO Auto-generated method stub
-		// imgFrame.setVisibility(8);
-		progressDialog = ProgressDialog.show(TransparentImgcropActivity.this,
-				"", "wait", true, false);
-		btnCrop.setVisibility(8);
-		btnSetImg.setVisibility(8);
-		btnFramList.setVisibility(1);
-
-		Bitmap srcImage = bitmapPhoto;
-
-		// Bitmap bitmapResult = Bitmap.createBitmap(imgPhoto.getWidth(),
-		// imgPhoto.getHeight(), Bitmap.Config.ARGB_8888);
-	
+		Log.v("tag ", "call on imgView");
+		Bitmap b = savaWithFrame();
 		bitmapResult = Bitmap.createBitmap(MyImageView.w, MyImageView.h,
 				Bitmap.Config.ARGB_8888);
 		// Path path = new Path();
@@ -483,72 +448,17 @@ public class TransparentImgcropActivity extends Activity implements
 
 		Canvas canvas = new Canvas(bitmapResult);
 
-		// path.setFillType(Path.FillType.EVEN_ODD);
-		//
-		// path.setLastPoint(MyImageView.xPoint.get(MyImageView.xPoint.size()-1)
-		// ,MyImageView.yPoint.get(MyImageView.yPoint.size()-1));
-		// path.lineTo(MyImageView.xPoint.get(0),MyImageView.yPoint.get(0));
-		// for (int i = 1; i < MyImageView.xPoint.size(); i++) {
-		// path.lineTo(MyImageView.xPoint.get(i),MyImageView.yPoint.get(i));
-		//
-		// }
-		//
-		// canvas.clipPath(path, Region.Op.INTERSECT);
+		// canvas.drawBitmap(bi, matrix, paint);
+		ImageProcessor im = new ImageProcessor(MyImageView.mOriginalBitmap, b);
 
-		// The image is drawn within the area of two rectangles and a circle
-		// Although I suppose that puting Paint object into drawBitmap()
-		// method will add a red border on result image but it doesn't work
-		canvas.drawBitmap(srcImage, matrix, paint);
-
-		int Mw, Mh;
-		Mw = MyImageView.w;
-		Mh = MyImageView.h;
-
-		// final int[] pixels = new int[w * h];
-		// srcImage.getPixels(pixels, 0, w, 0, 0, w, h);
-
-		// points = new ArrayList<Integer>();
-
-		// xPoint = new ArrayList<Integer>();
-		// yPoint = new ArrayList<Integer>();
-
-		// Log.v("width", w + "");
-		// Log.v("height", h + "");
-		Log.v("size", MyImageView.xPoint.size() + "");
-
-		// final Bitmap bitmapTry=srcImage.copy(Config.ARGB_8888, true);
-
-		int i = 0;
-		int k = MyImageView.xPoint.size();
-
-		for (int x = 0; x < Mw; x++) {
-			// int firstY = -1, lastY = -1;
-			Log.v("X", "" + x);
-			for (int y = 0; y < Mh; y++) {
-				Log.v("y", "" + y);
-				Log.v("macha point", x + " = " + MyImageView.xPoint.get(y));
-				// if (x == MyImageView.xPoint.get(y)) {
-				// Log.v("macha point", x + " = " + MyImageView.xPoint.get(y));
-				// for (int k = 0; k < MyImageView.xPoint.size(); k++) {
-				if (x == MyImageView.xPoint.get(i)
-						&& y == MyImageView.yPoint.get(i)) {
-					Log.v("macha point", x + " = " + MyImageView.xPoint.get(i)
-							+ "  " + y + " = " + MyImageView.yPoint.get(i));
-
-					i++;
-					if (i == k) {
-						i = 0;
-					}
-
-				} else {
-					bitmapResult.setPixel(x, y, Color.TRANSPARENT);
-				}
-			}
-
-		}
-
-		imgPhoto.setImageBitmap(bitmapResult);
+		imgPhoto.setImageBitmap(im.replaceColor(Color.TRANSPARENT, Color.WHITE));
+		
+		bitmapResult=im.replaceColor(Color.TRANSPARENT, Color.WHITE);
+		
 		imgFrame.setVisibility(8);
-		progressDialog.dismiss();
+		// cropIMG();
+		btnCrop.setVisibility(8);
+		btnSave.setVisibility(1);
+		btnSaveFull.setVisibility(8);
 	}
 }

@@ -1,12 +1,10 @@
 package com.ketan.demo;
 
-import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.WindowManager;
@@ -19,7 +17,6 @@ public class MyImageView extends ImageView {
 	private int width, height;
 	public static int w, h;
 	public static Bitmap mOriginalBitmap = null;
-	private Boolean run = false;
 	public static int[] listOfFrame = {
 			R.drawable.antique_look_hand_carved_mirror_frames,
 			R.drawable.back_and_gold_frame, R.drawable.balloons_frame,
@@ -33,7 +30,6 @@ public class MyImageView extends ImageView {
 			R.drawable.wc_toocute_frame, R.drawable.wedding_frame,
 			R.drawable.wedding_photo_frame,R.drawable.yellow_dotted_frame };
 
-	public static ArrayList<Integer> xPoint, yPoint;
 
 	// private ArrayList<Integer> points;
 
@@ -79,33 +75,6 @@ public class MyImageView extends ImageView {
 		final int[] pixels = new int[w * h];
 		mOriginalBitmap.getPixels(pixels, 0, w, 0, 0, w, h);
 
-		// points = new ArrayList<Integer>();
-		Log.v("run F", run + "");
-		if (!run) {
-
-			xPoint = new ArrayList<Integer>();
-			yPoint = new ArrayList<Integer>();
-
-			Log.v("width", w + "");
-			Log.v("height", h + "");
-			Log.v("width", width + "");
-			Log.v("height", height + "");
-			for (int x = 0; x < w; x++) {
-				// int firstY = -1, lastY = -1;
-				for (int y = 0; y < h; y++) {
-
-					boolean transparent = (pixels[y * w + x] == Color.TRANSPARENT);
-
-					if (transparent) {
-						xPoint.add(x);
-						yPoint.add(y);
-					}
-				}
-			}
-			Log.v("X points list", xPoint.toString());
-			Log.v("Y points list", yPoint.toString());
-			run = true;
-		}
 
 	}
 
